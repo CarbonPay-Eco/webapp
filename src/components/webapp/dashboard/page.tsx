@@ -3,18 +3,19 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { KeyMetricCard } from "@/components/webapp/metrics/key-metric-card";
-import { ProjectCard } from "../../../components/webapp/projects/projects-card";
+import { ProjectCard } from "@/components/webapp/projects/projects-card";
 import { ProgressRing } from "@/components/webapp/metrics/progress-ring";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ArrowUpRight, Leaf, Wallet } from "lucide-react";
-import type { Project } from "../../../../types";
+import type { Project } from "../../../../types/index";
 import WebappShell from "@/components/webapp/layout/webapp-shell";
 import { PurchaseCreditsModal } from "@/components/webapp/modals/purchase-credits-modal";
 import {
   ProjectDetailsModal,
   type ProjectDetailsProps,
 } from "@/components/webapp/modals/project-details-modal";
+import { OnboardingStatus } from "@/components/webapp/dashboard/onboarding-status";
 
 // Mock data
 const metrics = {
@@ -115,20 +116,20 @@ const projectDetails: Record<string, ProjectDetailsProps> = {
     projectId: "VCS/3449",
     location: "São Paulo, Brazil",
     type: "Conservation Forest (REDD+)",
-    creditsIssued: 400000,
-    creditsAvailable: 90000,
+    creditsIssued: 450000,
+    creditsAvailable: 200000,
     vintageYear: "2022",
     certification: "Verra VCS",
     verifier: "AENOR Internacional",
     methodology: "VM0015",
-    tokenId: "CP-ATL-2022",
+    tokenId: "CP-ATLF-2022",
     lastTransaction: "https://explorer.solana.com/tx/789",
-    co2Reduction: 400000,
+    co2Reduction: 450000,
     documentation: "https://registry.verra.org/app/projectDetail/VCS/3449",
     image:
       "https://images.unsplash.com/photo-1511497584788-876760111969?w=800&q=80",
     description:
-      "The Atlantic Rainforest Preservation project focuses on protecting and restoring the Atlantic Forest biome, one of the world's most biodiverse and threatened ecosystems. The project implements sustainable forest management practices and prevents deforestation.",
+      "The Atlantic Rainforest Preservation project focuses on protecting and restoring areas of Brazil's endangered Atlantic Forest. This project helps conserve one of the world's most biodiverse and threatened forest ecosystems.",
     pricePerTon: 15,
   },
 };
@@ -161,8 +162,16 @@ export default function DashboardPage() {
     localStorage.setItem("walletConnected", "true");
   }, []);
 
-  const handleViewDetails = (project: Project) => {
-    const details = projectDetails[project.id];
+  // Simplified approach - directly open the modal with the project details
+  const openDetailsModal = (projectId: string) => {
+    console.log("Opening details modal for project ID:", projectId);
+    const details = projectDetails[projectId];
+
+    if (!details) {
+      console.error("No details found for project ID:", projectId);
+      return;
+    }
+
     setSelectedProject(details);
     setIsDetailsModalOpen(true);
   };
@@ -175,6 +184,14 @@ export default function DashboardPage() {
     <WebappShell>
       <main className="p-8">
         <div className="space-y-8">
+          {/* Test button */}
+          <Button onClick={() => openDetailsModal("1")} className="mb-4">
+            Test Modal
+          </Button>
+
+          {/* Onboarding Status */}
+          <OnboardingStatus />
+
           {/* Key Metrics */}
           <section>
             <h2 className="text-xl font-semibold">Key Metrics</h2>
@@ -251,7 +268,7 @@ export default function DashboardPage() {
                 <ProjectCard
                   key={project.id}
                   project={project}
-                  onViewDetails={handleViewDetails}
+                  onViewDetails={() => openDetailsModal(project.id)}
                   onPurchase={handlePurchase}
                 />
               ))}

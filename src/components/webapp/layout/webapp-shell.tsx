@@ -77,8 +77,8 @@ export default function WebappShell({ children }: WebappShellProps) {
             <X className="h-6 w-6" />
           </button>
         </div>
-        <div className="flex flex-1 flex-col justify-between px-4 py-4">
-          <nav className="space-y-1">
+        <div className="flex flex-col justify-between h-[calc(100vh-4rem)]">
+          <nav className="space-y-1 px-4 py-4">
             {navigation.map((item) => {
               const isActive = pathname === item.href
               return (
@@ -99,7 +99,7 @@ export default function WebappShell({ children }: WebappShellProps) {
             })}
           </nav>
 
-          <div className="space-y-1">
+          <div className="space-y-1 px-4 py-4 mt-auto border-t border-white/10">
             <div className="px-4 py-2">
               <h3 className="text-xs font-semibold uppercase text-gray-400">System</h3>
             </div>
